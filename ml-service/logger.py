@@ -52,28 +52,29 @@ class TimestampFormatter(colorlog.ColoredFormatter):
         return _timestamp.isoformat(timespec=self.__sub_sec_unit)
 
 
-def get_logger(module_name: str, level: str = "DEBUG") -> Logger:
+def get_logger(module_name: str) -> Logger:
     """
-    Return a logger
+    Get a logger that can produce ISO8601 Timestamp (with microseconds)
     Args:
         module_name (str): module name. Typically, you will use __name__
-
-        level (str): messages will be logged only if >= level  (default: "DEBUG")
-                     (e.g. "DEBUG", "INFO", "WARNING", "ERROR")
 
     Returns:
         (Logger): a logger instance
 
     """
     logger = logging.getLogger(module_name)
-    logger.setLevel(level=level)
+    logger.propagate = False
+
+    logger.setLevel(level="DEBUG")
 
     handler = colorlog.StreamHandler(sys.stdout)
 
-    format_style = "%(log_color)s %(asctime)s | %(levelname)s | %(message)s"
-    formatter = TimestampFormatter(fmt=format_style)
-    handler.setFormatter(formatter)
+    fmt = "%(log_color)s %(asctime)s - %(levelname)s - %(message)s - %(filename)s - %(funcName)s " \
+          "- %(threadName)s - %(processName)s"
+    formatter = TimestampFormatter(fmt=fmt)
+    console = logging.StreamHandler(sys.stdout)
+    console.setFormatter(formatter)
 
-    logger.addHandler(handler)
+    logger.addHandler(console)
 
     return logger
