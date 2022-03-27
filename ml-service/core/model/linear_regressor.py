@@ -6,7 +6,7 @@ from sklearn.linear_model import LinearRegression
 from .ml_model import MLModel
 
 
-class LinearRegressor(MLModel):
+class Linear(MLModel):
     def __init__(self):
         super().__init__()
         self._model = LinearRegression()

@@ -4,7 +4,7 @@ import pandas as pd
 from fastapi import FastAPI, UploadFile, HTTPException
 
 from core.ml_data import MLData
-from core.model.linear_regressor import LinearRegressor
+from core.model.linear_regressor import Linear
 from logger import get_logger
 from schema import ModelInput
 
@@ -48,7 +48,7 @@ def train_model(model_input: ModelInput):
     if error_msg:
         raise HTTPException(status_code=400, detail=error_msg)
 
-    model = LinearRegressor()
+    model = Linear()
     model.fit(
         data=ml_data.train_data_,
         target_col=ml_data.target_col_,

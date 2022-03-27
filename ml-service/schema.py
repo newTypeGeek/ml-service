@@ -6,7 +6,7 @@ from core import model
 
 
 class ModelType(str, Enum):
-    linear_regressor = model.LinearRegressor.__name__
+    linear_regressor = model.Linear.__name__
     random_forest = model.RandomForest.__name__
 
 
