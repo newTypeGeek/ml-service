@@ -11,7 +11,6 @@ from schema import ModelInput
 logger = get_logger(__name__)
 app = FastAPI()
 ml_data = MLData()
-sklearn_model = SklearnModel()
 
 
 @app.post("/file/csv")
@@ -51,16 +50,18 @@ def train_model(model_input: ModelInput):
         raise HTTPException(status_code=400, detail=error_msg)
 
     # TODO: currently only support sklearn, will support other framework later
-    if model_blueprint := sklearn_model.get_model_blueprint(model_name):
-        model = sklearn_model.create_model(model_blueprint)
-        model.fit(
+    if model_blueprint := SklearnModel.get_model_class(model_name):
+        sklearn_model = SklearnModel()
+        sklearn_model.create_model(model_blueprint)
+        sklearn_model.fit(
             data=ml_data.train_data_,
             target_col=ml_data.target_col_,
             feature_cols=ml_data.feature_cols_
         )
 
-        data_out = model.predict(
+        data_out = sklearn_model.predict(
             data=ml_data.train_data_,
+            target_col=ml_data.target_col_,
             feature_cols=ml_data.feature_cols_
         )
 
