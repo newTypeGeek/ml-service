@@ -1,8 +1,9 @@
 from typing import List
-from .ml_model import MLModel
-from sklearn.linear_model import LinearRegression
 
 import pandas as pd
+from sklearn.linear_model import LinearRegression
+
+from .ml_model import MLModel
 
 
 class LinearRegressor(MLModel):
