@@ -1,7 +1,7 @@
 from io import BytesIO
 
 import pandas as pd
-from fastapi import FastAPI, UploadFile
+from fastapi import FastAPI, UploadFile, HTTPException
 
 from logger import get_logger
 
@@ -20,10 +20,8 @@ async def upload_file(file: UploadFile):
     except UnicodeDecodeError as e:
         exception = f"Failed to read the csv file {file.filename=}, {file.content_type=}, Exception={e}"
         logger.error(exception, exc_info=True)
-        return {
-            "status": f"Failed to read the csv file",
-            "exception": exception,
-        }
+        raise HTTPException(status_code=400, detail=exception)
+
     print(df)
 
     return {
