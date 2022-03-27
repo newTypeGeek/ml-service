@@ -1,2 +1,2 @@
-from .linear_regressor import Linear
+from .linear import Linear
 from .random_forest import RandomForest

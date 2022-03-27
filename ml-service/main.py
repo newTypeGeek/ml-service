@@ -4,7 +4,7 @@ import pandas as pd
 from fastapi import FastAPI, UploadFile, HTTPException
 
 from core.ml_data import MLData
-from core.model.linear_regressor import Linear
+from core.model.linear import Linear
 from logger import get_logger
 from schema import ModelInput
 
