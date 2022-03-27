@@ -4,14 +4,13 @@ import pandas as pd
 from fastapi import FastAPI, UploadFile, HTTPException
 
 from core.ml_data import MLData
-from core.ml_model_factory import MLModelFactory
+from core.sklearn_model import SklearnModel
 from logger import get_logger
 from schema import ModelInput
 
 logger = get_logger(__name__)
 app = FastAPI()
 ml_data = MLData()
-ml_model_factory = MLModelFactory()
 
 
 @app.post("/file/csv")
@@ -50,19 +49,23 @@ def train_model(model_input: ModelInput):
     if error_msg:
         raise HTTPException(status_code=400, detail=error_msg)
 
-    model = ml_model_factory.create_model(model_name)
-    model.fit(
-        data=ml_data.train_data_,
-        target_col=ml_data.target_col_,
-        feature_cols=ml_data.feature_cols_
-    )
+    # TODO: currently only support sklearn, will support other framework later
+    if model_blueprint := SklearnModel.get_model_class(model_name):
+        sklearn_model = SklearnModel()
+        sklearn_model.create_model(model_blueprint)
+        sklearn_model.fit(
+            data=ml_data.train_data_,
+            target_col=ml_data.target_col_,
+            feature_cols=ml_data.feature_cols_
+        )
 
-    data_out = model.predict(
-        data=ml_data.train_data_,
-        feature_cols=ml_data.feature_cols_
-    )
+        data_out = sklearn_model.predict(
+            data=ml_data.train_data_,
+            target_col=ml_data.target_col_,
+            feature_cols=ml_data.feature_cols_
+        )
 
-    print(data_out)
+        print(data_out)
 
     return {}
 
