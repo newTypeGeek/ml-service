@@ -1,23 +1,17 @@
 from io import BytesIO
-from typing import List, Optional
 
 import pandas as pd
 from fastapi import FastAPI, UploadFile, HTTPException
-from pydantic import BaseModel
 
 from core.ml_data import MLData
-from core.model.linear_regressor import LinearRegressor
+from core.ml_model_factory import MLModelFactory
 from logger import get_logger
+from schema import ModelInput
 
 logger = get_logger(__name__)
 app = FastAPI()
 ml_data = MLData()
-
-
-class ModelInput(BaseModel):
-    model_name: str
-    target_col: str
-    feature_cols: Optional[List[str]] = None
+ml_model_factory = MLModelFactory()
 
 
 @app.post("/file/csv")
@@ -56,7 +50,7 @@ def train_model(model_input: ModelInput):
     if error_msg:
         raise HTTPException(status_code=400, detail=error_msg)
 
-    model = LinearRegressor()
+    model = ml_model_factory.create_model(model_name)
     model.fit(
         data=ml_data.train_data_,
         target_col=ml_data.target_col_,
