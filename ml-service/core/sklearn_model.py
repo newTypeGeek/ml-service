@@ -1,5 +1,6 @@
 from typing import Any, List
 
+import numpy as np
 import pandas as pd
 import sklearn.ensemble
 import sklearn.linear_model
@@ -47,10 +48,7 @@ class SklearnModel:
         target = data[target_col]
         self._model.fit(features, target)
 
-    def predict(self, data: pd.DataFrame, target_col: str, feature_cols: List[str]) -> pd.DataFrame:
+    def predict(self, data: pd.DataFrame, feature_cols: List[str]) -> np.array:
         data_ = data.copy()
         features = data_[feature_cols]
-        predictions = self._model.predict(features)
-        data_[f"{target_col}_prediction"] = predictions
-        return data
-
+        return self._model.predict(features)
