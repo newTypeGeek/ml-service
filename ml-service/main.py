@@ -6,7 +6,7 @@ from fastapi import FastAPI, UploadFile, HTTPException
 from core.ml_data import MLData
 from core.sklearn_model import SklearnModel
 from logger import get_logger
-from schema import ModelInput
+from schema import ModelInput, ModelFrameWork
 
 logger = get_logger(__name__)
 app = FastAPI()
@@ -41,7 +41,9 @@ async def upload_file(file: UploadFile):
 
 @app.post("/train")
 def train_model(model_input: ModelInput):
+    framework = model_input.framework
     model_name = model_input.model_name
+    params = model_input.params
     target_col = model_input.target_col
     feature_cols = model_input.feature_cols
 
@@ -50,9 +52,10 @@ def train_model(model_input: ModelInput):
         raise HTTPException(status_code=400, detail=error_msg)
 
     # TODO: currently only support sklearn, will support other framework later
-    if model_blueprint := SklearnModel.get_model_class(model_name):
+    if framework == ModelFrameWork.sklearn:
+        model_class = SklearnModel.get_model_class(model_name)
         sklearn_model = SklearnModel()
-        sklearn_model.create_model(model_blueprint)
+        sklearn_model.create_model(model_class, **params)
         sklearn_model.fit(
             data=ml_data.train_data_,
             target_col=ml_data.target_col_,
@@ -64,7 +67,6 @@ def train_model(model_input: ModelInput):
             feature_cols=ml_data.feature_cols_
         )
 
-    return {
-        "payload": list(predictions)
-    }
-
+        return {
+            "payload": list(predictions)
+        }
