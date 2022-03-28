@@ -59,13 +59,12 @@ def train_model(model_input: ModelInput):
             feature_cols=ml_data.feature_cols_
         )
 
-        data_out = sklearn_model.predict(
+        predictions = sklearn_model.predict(
             data=ml_data.train_data_,
-            target_col=ml_data.target_col_,
             feature_cols=ml_data.feature_cols_
         )
 
-        print(data_out)
-
-    return {}
+    return {
+        "payload": list(predictions)
+    }
 
