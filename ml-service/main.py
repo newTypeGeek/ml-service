@@ -55,7 +55,7 @@ def train_model(model_input: ModelInput):
     if framework == ModelFrameWork.sklearn:
         model_class = SklearnModel.get_model_class(model_name)
         sklearn_model = SklearnModel()
-        sklearn_model.create_model(model_class)
+        sklearn_model.create_model(model_class, **params)
         sklearn_model.fit(
             data=ml_data.train_data_,
             target_col=ml_data.target_col_,
