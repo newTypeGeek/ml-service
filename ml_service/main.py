@@ -36,8 +36,10 @@ async def upload_file(file: UploadFile):
     if error_msg:
         raise HTTPException(status_code=400, detail=error_msg)
 
+    message = "Successfully uploaded the file"
+    logger.info(message)
     return {
-        "status": "Successfully uploaded the file"
+        "message": message
     }
 
 
