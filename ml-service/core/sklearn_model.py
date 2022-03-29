@@ -21,6 +21,10 @@ class SklearnModel:
     def __init__(self):
         self._model = None
 
+    @property
+    def model_(self):
+        return self._model
+
     @classmethod
     def get_model_class(cls, model_name: str) -> Any:
         if model_name in cls._sklearn_linear_models:

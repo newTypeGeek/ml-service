@@ -1,7 +1,9 @@
+import pickle
 from io import BytesIO
 
 import pandas as pd
 from fastapi import FastAPI, UploadFile, HTTPException
+from fastapi.responses import StreamingResponse
 
 from core.ml_data import MLData
 from core.sklearn_model import SklearnModel
@@ -61,12 +63,5 @@ def train_model(model_input: ModelInput):
             target_col=ml_data.target_col_,
             feature_cols=ml_data.feature_cols_
         )
-
-        predictions = sklearn_model.predict(
-            data=ml_data.train_data_,
-            feature_cols=ml_data.feature_cols_
-        )
-
-        return {
-            "payload": list(predictions)
-        }
+        f = pickle.dumps(sklearn_model.model_)
+        return StreamingResponse(BytesIO(f))
