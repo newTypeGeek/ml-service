@@ -1,0 +1,7 @@
+.*
+!.gitignore
+*.pyc
+__pycache__/
+*.csv
+!tests/test_data.csv
+*.pickle
